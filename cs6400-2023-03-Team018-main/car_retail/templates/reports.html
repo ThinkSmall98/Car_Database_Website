@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Reports {% endblock %}</h1>
+    <div class='vehicle'>
+      <h2><a href="{{ url_for('rep.part_stats') }}">Part Statistics</a></h2>
+      <h2><a href="{{ url_for('rep.monthly_sales') }}">Monthly Sales</a></h2>
+      <h2><a href="{{ url_for('rep.price_per_condition') }}">Price Per Condition</a></h2>
+      <h2><a href="{{ url_for('rep.average_time_inventory') }}">Average Time in Inventory</a></h2>
+      <h2><a href="{{ url_for('rep.seller_history') }}">Seller History</a></h2>
+    </div>
+{% endblock %}

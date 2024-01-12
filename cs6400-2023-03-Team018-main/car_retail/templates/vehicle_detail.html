@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Vehicle Detail Page</h3>
+    <table class="table table-bordered" style="width : 700px ">
+    <tr>
+        <th>Field</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>vin</td>
+        <td>{{vin}}</td>
+    </tr>
+    <tr>
+        <td>vehicle_type</td>
+        <td>{{vehicle_type}}</td>
+    </tr>
+    <tr>
+        <td>fuel_type</td>
+        <td>{{fuel_type}}</td>
+    </tr>
+    <tr>
+        <td>model_year</td>
+        <td>{{model_year}}</td>
+    </tr>
+    <tr>
+        <td>manufacturer</td>
+        <td>{{manufacturer}}</td>
+    </tr>
+    <tr>
+        <td>model_name</td>
+        <td>{{model_name}}</td>
+    </tr>
+    <tr>
+        <td>mileage</td>
+        <td>{{mileage}}</td>
+    </tr>
+    <tr>
+        <td>colors</td>
+        <td>{{colors}}</td>
+    </tr>
+    <tr>
+        <td>sales_price</td>
+        <td>{{sales_price}}</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>{{description}}</td>
+    </tr>
+    {% if original_purchase_price %}
+    <tr>
+        <td>purchase_price</td>
+        <td>{{ original_purchase_price}}</td>
+    </tr>
+    <tr>
+        <td>total_parts_cost</td>
+        <td>{{total_parts_cost}}</td>
+    </tr>
+    {% endif %}
+    {% if seller_email %}
+    <!-- work on displaying ALL parts -->
+    <tr>
+        <td>seller_email</td>
+        <td>{{seller_email}}</td>
+    </tr>
+    <tr>
+        <td>seller_phone</td>
+        <td>{{seller_phone}}</td>
+    </tr>
+    <tr>
+        <td>seller_address</td>
+        <td>{{seller_address}}</td>
+    </tr>
+    <tr>
+        <td>seller_name</td>
+        <td>{{seller_name}}</td>
+    </tr>
+    <tr>
+        <td>inventory_clerk_name</td>
+        <td>{{inventory_clerk_name}}</td>
+    </tr>
+    <tr>
+        <td>purchase_date</td>
+        <td>{{purchase_date}}</td>
+    </tr>
+    {% endif %}
+    {% if buyer_email %}
+    <!-- work on displaying ALL parts -->
+    <tr>
+        <td>buyer_email</td>
+        <td>{{buyer_email}}</td>
+    </tr>
+    <tr>
+        <td>buyer_phone</td>
+        <td>{{buyer_phone}}</td>
+    </tr>
+    <tr>
+        <td>buyer_address</td>
+        <td>{{buyer_address}}</td>
+    </tr>
+    <tr>
+        <td>buyer_name</td>
+        <td>{{buyer_name}}</td>
+    </tr>
+    <tr>
+        <td>sales_date</td>
+        <td>{{sales_date}}</td>
+    </tr>
+    <tr>
+        <td>salesperson_name</td>
+        <td>{{salesperson_name}}</td>
+    </tr>
+    {% endif %}
+    {% if is_sales_person_role and sellable %}
+    <tr><td></td><td><button onclick="location.href='/sales-order-form?vin={{ vin }}'" type="button" id="sales_order_form">Sell Car</button></td></tr>
+    {% endif %}
+</table>
+{% if part_dict %}
+<h3>Parts Table</h3>
+<table class="table table-bordered">
+    <tr>
+        <th>Part Number</th>
+        <th>Part Description</th>
+        <th>Vendor</th>
+        <th>Part Cost</th>
+        <th>Quantity</th>
+        <th>Part Purchase Order</th>
+        <th>Part Status</th>
+        <th></th>
+    </tr>
+    <tbody>
+        {% for part in part_dict %}
+          <tr>
+            <td>{{ part['part_number'] }}</td>
+            <td>{{ part['part_description'] }}</td>
+            <td>{{ part['vendor'] }}</td>
+            <td>{{ part['part_cost'] }}</td>
+            <td>{{ part['quantity'] }}</td>
+            <td>{{ part['part_purchase_order'] }}</td>
+            <td>{{ part['part_status'] }}</td>
+            
+            {% if status != 'sold' and part['part_status'] != 'installed' and is_inventory_clerk_role %}
+            <td><button onclick="location.href='/part-status-update?part-number={{ part.part_number }}&purchase-order-number={{ part.part_purchase_order }}'" type="button" id="update_part_status">Update Part Status</button></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Search Results {% endblock %}</h1>
+    <table id="data" class="table table-striped">
+      <thead>
+        <tr>
+          <th>VIN</th>
+          <th>Vehicle Type</th>
+          <th>Fuel Type</th>
+          <th>Model Year</th>
+          <th>Manufacturer</th>
+          <th>Model Name</th>
+          <th>Mileage</th>
+          <th>Color(s)</th>
+          <th>Sale Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vehicle in search_results %}
+          <tr>
+            <td><a href="{{ url_for('main.vehicle_detail',vin=vehicle.vin)}}">{{ vehicle['vin'] }}</a></td>
+            <td>{{ vehicle['vehicle_type'] }}</td>
+            <td>{{ vehicle['fuel_type'] }}</td>
+            <td>{{ vehicle['model_year'] }}</td>
+            <td>{{ vehicle['manufacturer'] }}</td>
+            <td>{{ vehicle['model_name'] }}</td>
+            <td>{{ vehicle['mileage'] }}</td>
+            <td>{{ vehicle['colors'] }}</td>
+            <td>{{ vehicle['sales_price'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}

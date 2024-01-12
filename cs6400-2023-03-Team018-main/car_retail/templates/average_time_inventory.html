@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Average Time in Inventory {% endblock %}</h1>
+    <table id="data" class="table table-striped">
+        <tr>
+            <th>Vehicle Type</th>
+            <th>Average Time (Days)</th>
+        </tr>
+        {% for vehicle_type, average_time in data %}
+        <tr>
+            <td>{{ vehicle_type }}</td>
+            <td>{{ '%0.2f'| format(average_time|float) if average_time != None else 'N/A'  }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

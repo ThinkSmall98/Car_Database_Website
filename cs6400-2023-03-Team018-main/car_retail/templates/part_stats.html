@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Parts Statistics {% endblock %}</h1>
+    <table id="data" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Total Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for part in parts %}
+          <tr>
+            <td>{{ part['name'] }}</td>
+            <td>{{ part['number_of_parts'] }}</td>
+            <td>{{ part['total_cost'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}

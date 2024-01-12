@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Price Per Vehicle Condition {% endblock %}</h1>
+    <table id="data" class="table table-bordered border-primary" style="width: 1000px">
+        <tr>
+            <th>Average Purchase Price</th>
+            <th>Vehicle Types</th>
+            <th colspan="{{ vehicle_types|length - 1 }}"></th>
+        </tr>
+        <tr>
+            <th>Condition</th>
+            {% for vehicle_type in vehicle_types %}
+            <th>{{ vehicle_type }}</th>
+            {% endfor %}
+        </tr>
+        {% for key,values in conditions.items() %}
+        <tr>
+            <th>{{ key }}</th>
+            {% for value in values %}
+            <td>{{ '%0.2f'| format(value|float) }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

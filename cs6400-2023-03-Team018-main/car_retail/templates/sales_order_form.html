@@ -1,0 +1,72 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        $("#search_customer").click(function() {
+
+            var query_string = {}
+            identifier_param = $('#identifier').val()
+            query_string = { identifier: identifier_param }
+
+            $.getJSON({
+            url: "/get-sales-order-customer-data",
+            data: query_string,
+            success: function(data){
+                if (data.customer_exist == false) {
+                    $('#enter_customer').removeAttr('hidden');
+                    $('#customer_error').removeAttr('hidden');
+                    $('#customer_display_name').attr('hidden');
+                    $('#record_sales').attr('hidden');
+                }
+                else {
+                    var customer_id_val = data.customer_data['customer_id'];
+                    var customer_name = data.customer_data['customer_name'];
+                    $('#sales_date_label').removeAttr('hidden');
+                    $('#datepicker').removeAttr('hidden');
+                    $('#customer_error').attr('hidden');
+                    $('#identifier').attr('readonly', true);
+                    $('#customer_id').val(customer_id_val);
+                    $('#customer_display_name').removeAttr('hidden');
+                    $('#customer_display_name').html('Customer is ' + customer_name);
+                }   
+            }
+            });
+        });
+    // Add this function to set the original_page value based on the current page
+    function setOriginalPage() {
+            var current_page = window.location.pathname;
+            $('#original_page').val(current_page);
+        }
+
+        // Call the function on page load
+        setOriginalPage();
+
+        $("#datepicker").on("change",function(){
+        var selected = new Date($(this).val());
+        var today = new Date();
+        today.setHours(0,0,0,0)
+        if (selected.getTime() < today.getTime()) {
+            alert('Must choose date greater or equal to today');
+            $('#record_sales').attr('hidden', true);
+        } else {
+            $('#record_sales').removeAttr('hidden');
+        }
+    });
+
+    });
+</script>
+
+<body>
+    <form method="POST" action="/record-sales">
+        <h1>Sales Order Form</h1>
+        <label for="vin">VIN: </label><input type="text" name="vin" id="vin" value="{{ vin }}" readonly>
+        <h4>Please enter drivers license or tax id</h4>
+        <label for="identifier">Identifier </label><input type="text" name="identifier" id="identifier">
+        <input type="button" value="search_customer" id="search_customer" value="Search Customer"><br>
+        <input type="text" id="customer_id" name="customer_id" value="" hidden><br>
+        <h3 id="customer_error" hidden>Error: Customer not found</h3><br>
+        <h3 id="customer_display_name" hidden></h3>
+        <button onclick="location.href='/add_customer'" type="button" id="enter_customer" hidden>Add Customer</button>
+        <label id="sales_date_label" for="sales_date" hidden>Sales Date: </label><input type="date" name="datepicker" id="datepicker" hidden>
+        <input type="submit" value="record_sales" id="record_sales" hidden>
+    </form>
+</body>

@@ -1,0 +1,140 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Add Part Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    form {
+        max-width: 500px;  
+        margin: auto;
+    }
+
+    label {
+        display: inline-block;
+        width: 150px;  
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    input,
+    select {
+        width: 200px;  
+        box-sizing: border-box;  
+        margin-bottom: 10px;
+    }
+
+    input[type="submit"] {
+        width: auto; 
+    }
+</style>
+</head>
+
+<body>
+    <h1>Add Part Order</h1>
+    <form method="POST" action="{{ url_for('main.add_part_order') }}">
+
+        <label for="vin">Vehicle VIN:</label>
+        <input type="text" name="vin" id="vin" required><br>
+        
+        <div class="form-group">
+            <label for="vendor">Vendor:</label>
+            <input type="text" name="vendor" id="vendor" list="vendors"  required>
+            <button type="button" onclick="redirectToVendor()">Add Vendor</button><br>
+            <script>
+                function redirectToVendor() {
+                    window.location.replace("{{ url_for('main.add_vendor') }}");
+                }
+            </script>
+                        <datalist id="vendors"></datalist>
+        </div>
+        
+        <label for="part_status1">Part 1 Status:</label>
+        <select name="part_status1" id="part_status1" required>
+            <option value="ordered">Ordered</option>
+            <option value="received">Received</option>
+            <option value="installed">Installed</option>
+        </select><br>
+        <label for="part_description1">Part 1 Description:</label>
+        <input type="text" name="part_description1" id="part_description1" required><br>
+
+        <label for="part_number1">Part 1 Number:</label>
+        <input type="text" name="part_number1" id="part_number1" required><br>
+
+        <label for="part_cost1">Part 1 Cost:</label>
+        <input type="number" name="part_cost1" id="part_cost1" step="0.01" required><br>
+
+        <label for="quantity1">Quantity:</label>
+        <input type="number" name="quantity1" id="quantity1" value="1" min="1" required>
+        <br>
+
+        <div id="partsContainer"></div>
+        <input type="hidden" name="part_count" id="part_count" value="1">
+        <button type="button" onclick="addPart()">Add Another Part</button>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function addPart() {
+            var container = document.getElementById("partsContainer");
+            var part_count = document.getElementById("part_count").value;
+            part_count = (Number(part_count) + 1).toString();
+            document.getElementById("part_count").value = part_count;
+
+            var newPart = document.createElement("div");
+            newPart.innerHTML = `
+                <hr>
+                <label for="part_status${part_count}">Part Status:</label>
+                <select name="part_status${part_count}" id="part_status${part_count}" required>
+                    <option value="ordered">Ordered</option>
+                    <option value="received">Received</option>
+                    <option value="installed">Installed</option>
+                </select><br>
+                <label for="part_description${part_count}">Part ${part_count} Description:</label>
+                <input type="text" name="part_description${part_count}" 
+                       id="part_description${part_count}" required><br>
+                <label for="part_number${part_count}">Part ${part_count} Number:</label>
+                <input type="text" name="part_number${part_count}" 
+                       id="part_number${part_count}" required><br>
+                <label for="part_cost${part_count}">Part ${part_count} Cost:</label>
+                <input type="text" name="part_cost${part_count}" 
+                       id="part_cost${part_count}" step="0.01" required><br>
+                <label for="quantity${part_count}">Quantity:</label>
+                <input type="number" name="quantity${part_count}" 
+                       id="quantity${part_count}" value="1" min="1" required>
+                <button type="button" onclick="removePart(this)">Remove</button>`;
+            
+            container.appendChild(newPart);
+        }
+
+        function removePart(button) {
+            button.parentNode.remove();
+        }
+
+        var vendorsList = document.getElementById("vendors");
+        fetch("{{ url_for('main.get_vendors') }}")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(vendor => {
+                    var option = document.createElement("option");
+                    option.value = vendor;
+                    vendorsList.appendChild(option);
+                });
+            });
+    </script>
+</body>
+
+</html>
+{% endblock %}

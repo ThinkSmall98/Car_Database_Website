@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                alert($(this).data("href"));
+                window.location = $(this).data("href");
+             });
+        });
+    </script>
+    <h1>{% block title %} Monthly Sales {% endblock %}</h1>
+    <table id="data" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Month</th>
+          <th>Number of Vehicles Sold</th>
+          <th>Sales Income</th>
+          <th>Net Income</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sale in sales %}
+          <tr>
+            <td><a href="{{ url_for('rep.sales_detail',year=sale.sales_year,month=sale.sales_month) }}">{{ sale['sales_year'] }}</a></td>
+            <td>{{ sale['sales_month'] }}</td>
+            <td>{{ sale['number_sold'] }}</td>
+            <td>{{ sale['sales_income'] }}</td>
+            <td>{{ sale['net_income'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+<script type="text/javascript" charset="utf-8">
+    function click(tRow){
+       var year = tRow.getElementsByTagName("td")["0"].innerText;
+       var month = tRow.getElementsByTagName("td")["1"].innerText
+     
+  fetch(`${window.origin}/print`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(list),
+    cache: "no-cache",
+    headers: new Headers({
+      "content-type": "application/json"
+    })
+  })
+  
+
+}
+  </script>
+{% endblock %}

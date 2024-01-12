@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        $('.seller_row .avg_ordered').filter(function() {
+        return parseInt($(this).val(), 2) > 0;
+        });
+
+        $('.seller_row').each(function(){
+            var avg_o = parseInt($(this).find('.avg_ordered').text());
+            if(avg_o >= 5)
+                $(this).css({"backgroundColor":"red"});
+        });
+
+        $('.seller_row').each(function(){
+            var avg_o = Number($(this).find('.avg_cost_part').text().replace(/[^0-9.-]+/g,""));
+            if(avg_o >= 500)
+                $(this).css({"backgroundColor":"red"});
+        });
+    });
+</script>
+<table class="table table-bordered border-primary">
+    <thead>
+        <tr>
+            <th>Customer Id</th>
+            <th>Name</th>
+            <th>Total Vehicles</th>
+            <th>Average Purchase Price</th>
+            <th>Average Parts Ordered Per Vehivle</th>
+            <th>Average Part Cost Per Vehicle</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in data %}
+        <tr class="seller_row">
+            <td>{{d['customer_id']}}</td>
+            <td>{{d['name']}}</td>
+            <td>{{d['total_vehicles']}}</td>
+            <td>{{'%0.2f'| format(d['avg_purchase_price']|float)}}</td>
+            <td class="avg_ordered">{{'%0.2f'| format(d['avg_parts_ordered_per_vehicle']|float)}}</td>
+            <td class="avg_cost_part">{{d['avg_part_cost_per_vehicle']}}</td>
+        </tr> 
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Monthly Sales Detail {% endblock %}</h1>
+    <table id="data" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Number of Vehicles</th>
+          <th>SalesPerson First Name</th>
+          <th>SalesPerson Last Name</th>
+          <th>Total Sales Income</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sale in sales %}
+          <tr>
+            <td>{{ sale['number_of_vehicles'] }}</td>
+            <td>{{ sale['first_name'] }}</td>
+            <td>{{ sale['last_name'] }}</td>
+            <td>{{ sale['total_sales_income'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Vehicle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <style>
+        .error-message {
+            color: red;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;  
+            margin: auto;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;  
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        input,
+        select {
+            width: 200px;  
+            box-sizing: border-box;  
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            width: auto;  
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Vehicle</h1>
+
+        <form method="POST" action="{{ url_for('main.add_vehicle') }}" onsubmit="return validateForm()">
+            <label for="vin">VIN:</label>
+            <input type="text" name="vin" id="vin" required pattern="^[A-Za-z0-9\- ,]+$">
+            <span id="vin-error" class="error-message"></span><br>
+
+        <label for="vehicle_type">Vehicle Type:</label>
+        <select name="vehicle_type" id="vehicle_type">
+            {% for v_type in vehicle_types%}
+                <option value="{{ v_type }}">{{ v_type }}</option>
+            {% endfor %}
+        </select>
+        <span id="vehicle_type-error" class="error-message"></span>
+        <br>
+
+        <label for="manufacturer">Manufacturer:</label>
+        <select name="manufacturer" id="manufacturer">
+            {% for manufacturer in manufacturers %}
+                <option value="{{ manufacturer }}">{{ manufacturer }}</option>
+            {% endfor %}
+        </select>
+        <span id="manufacturer-error" class="error-message"></span>
+        <br>
+
+        <label for="model_name">Model Name:</label>
+        <input type="text" id="model_name" name="model_name" required>
+        <span id="model_name-error" class="error-message"></span>
+        <br>
+
+        <label for="model_year">Model Year:</label>
+        <input type="number" id="model_year" name="model_year" min="1000" max="2024" required>
+        <span id="model_year-error" class="error-message"></span>
+        <br>
+
+        <label for="fuel_type">Fuel Type:</label>
+        <select name="fuel_type" id="fuel_type">
+            <option value="Gas">Gas</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Natural Gas">Natural Gas</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Plugin Hybrid">Plugin Hybrid</option>
+            <option value="Battery">Battery</option>
+            <option value="Fuel Cell">Fuel Cell</option>
+        </select>
+        <span id="fuel_type-error" class="error-message"></span>
+        <br>
+
+        <label for="color">Color:</label>
+        <select multiple name="color" id="color">
+            {% for color in colors %}
+                <option value="{{ color }}">{{ color }}</option>
+            {% endfor %}
+        </select>
+        <span id="color-error" class="error-message"></span>
+        <br>
+
+        <label for="mileage">Mileage:</label>
+        <input type="number" id="mileage" name="mileage" required>
+        <span id="mileage-error" class="error-message"></span>
+        <br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" maxlength="500"></textarea>
+        <span id="description-error" class="error-message"></span>
+        <br>
+
+        <label for="purchase_price">Purchase Price:</label>
+        <input type="number" id="purchase_price" name="purchase_price" required><br>
+
+        <label for="purchase_date">Purchase Date:</label>
+        <input type="date" id="purchase_date" name="purchase_date" required><br>
+
+        <label for="condition">Condition:</label>
+        <select name="condition" id="condition">
+            <option value="Excellent">Excellent</option>
+            <option value="Very Good">Very Good</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+        </select><br>
+
+        <!-- <div class="form-group"> -->
+        <!-- <label for="seller">Seller:</label>
+        <input type="text" id="seller" placeholder="Search by Tax ID or Driver License"> -->
+        <label for="seller">Seller:</label>
+        <input type="text" id="seller" name="seller" placeholder="Search by Tax ID or Driver License" required>
+        <span id="seller-error" class="error-message"></span>
+        <br>
+        <!--
+        <button type="button" onclick="redirectToVendor()">Add Seller</button>
+        
+        <script>
+            function redirectToVendor() {
+                window.location.replace("{{ url_for('main.add_customer') }}");
+            }
+        
+            $(document).ready(function() {
+                // Function to update seller options based on search
+                function updateSellerOptions(searchTerm) {
+                    $.ajax({
+                        url: "/search-sellers",  // Replace with your actual endpoint for seller search
+                        method: "GET",
+                        data: { search_term: searchTerm },
+                        dataType: "json",
+                        success: function(data) {
+                            // Clear existing options
+                            $('#sellerDropdown').empty();
+        
+                            // Add new options based on search results
+                            for (var i = 0; i < data.length; i++) {
+                                $('#sellerDropdown').append('<option value="' + data[i]['customer_id'] + '">' + data[i]['name'] + '</option>');
+                            }
+                        },
+                        error: function(error) {
+                            console.log("Error fetching seller data");
+                        }
+                    });
+                }
+        
+                // Event listener for seller search input
+                $('#sellerSearch').on('input', function() {
+                    var searchTerm = $(this).val();
+                    updateSellerOptions(searchTerm);
+                });
+            });
+        </script>-->
+
+        <input type="submit" value="Add Vehicle">
+    </form>
+
+    <script>
+        function validatePurchaseDate() {
+            var purchaseDateInput = document.getElementById('purchase_date');
+            var purchaseDateError = document.getElementById('purchase_date_error');
+            var selectedDate = new Date(purchaseDateInput.value);
+            var currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0); 
+            if (selectedDate <= currentDate) {
+                purchaseDateError.textContent = '';
+                purchaseDateInput.setCustomValidity('');
+            } else {
+                purchaseDateError.textContent = 'Purchase date cannot be later than today.';
+                purchaseDateInput.setCustomValidity('Purchase date cannot be later than today.');
+            }
+        }
+        document.getElementById('purchase_date').setAttribute('max', new Date(new Date().getTime() - 86400000).toISOString().split('T')[0]);
+
+        function validateForm() {
+            var vinInput = document.getElementById('vin');
+            var vinError = document.getElementById('vin-error');
+            var vehicleTypeInput = document.getElementById('vehicle_type');
+            var vehicleTypeError = document.getElementById('vehicle_type-error');
+            var manufacturerInput = document.getElementById('manufacturer');
+            var manufacturerError = document.getElementById('manufacturer-error');
+            var modelNameInput = document.getElementById('model_name');
+            var modelNameError = document.getElementById('model_name-error');
+            var modelYearInput = document.getElementById('model_year');
+            var modelYearError = document.getElementById('model_year-error');
+            var fuelTypeInput = document.getElementById('fuel_type');
+            var fuelTypeError = document.getElementById('fuel_type-error');
+            var colorInput = document.getElementById('color');
+            var colorError = document.getElementById('color-error');
+            var mileageInput = document.getElementById('mileage');
+            var mileageError = document.getElementById('mileage-error');
+            var descriptionInput = document.getElementById('description');
+            var descriptionError = document.getElementById('description-error');
+    
+            // Validate VIN
+            if (!vinInput.value.match(/^[A-Za-z0-9\- ,]+$/)) {
+                vinError.textContent = 'Invalid VIN format';
+                return false;
+            } else {
+                vinError.textContent = '';
+            }
+
+            // Validate Model Year
+            var modelYearInput = document.getElementById('model_year');
+            var modelYearError = document.getElementById('model_year-error');
+
+            var currentYear = new Date().getFullYear();
+            var enteredYear = parseInt(modelYearInput.value, 10);
+
+            if (
+                isNaN(enteredYear) ||                     // Check if it's a valid number
+                enteredYear < 1990 ||                     // Check if it's not earlier than 1990
+                enteredYear > currentYear + 1             // Check if it's not more than one year into the future
+            ) {
+                modelYearError.textContent = 'Invalid model year';
+                return false;
+            } else {
+                modelYearError.textContent = '';
+            }
+            // Validate Mileage
+            var mileageInput = document.getElementById('mileage');
+            var mileageError = document.getElementById('mileage-error');
+
+            var enteredMileage = parseInt(mileageInput.value, 10);
+
+            if (isNaN(enteredMileage) || enteredMileage < 0) {
+                mileageError.textContent = 'Mileage cannot be negative';
+                return false;
+            } else {
+                mileageError.textContent = '';
+            }
+            
+            return true;  // Allow form submission if all validations pass
+        }
+    
+        // Real-time validation on input change
+        document.getElementById('vin').addEventListener('input', validateForm);
+        document.getElementById('vehicle_type').addEventListener('input', validateForm);
+        document.getElementById('manufacturer').addEventListener('input', validateForm);
+        document.getElementById('model_name').addEventListener('input', validateForm);
+        document.getElementById('model_year').addEventListener('input', validateForm);
+        document.getElementById('fuel_type').addEventListener('input', validateForm);
+        document.getElementById('color').addEventListener('input', validateForm);
+        document.getElementById('mileage').addEventListener('input', validateForm);
+        document.getElementById('description').addEventListener('input', validateForm);
+    
+    </script>
+    
+
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</body>
+</html>
+{% endblock %}

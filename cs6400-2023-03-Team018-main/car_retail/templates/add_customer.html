@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Add Customer</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    form {
+        max-width: 400px; 
+        margin: auto;
+    }
+
+    label {
+        display: inline-block;
+        width: 120px; 
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    input,
+    select {
+        width: 200px; 
+        box-sizing: border-box; 
+        margin-bottom: 10px;
+    }
+
+    input[type="submit"] {
+        width: auto; 
+    }
+</style>
+</head>
+<body>
+<h1>Add Customer</h1>
+
+<form id="customer_form" method="post" action="/add_customer" onsubmit="return validateForm()">
+    <label for="email_address">Email Address:</label>
+    <input type="email" name="email_address" id="email_address" required><br>
+
+    <label for="phone_number">Phone Number:</label>
+    <input type="text" name="phone_number" id="phone_number" required><br>
+
+    <label for="postal_code">Postal Code:</label>
+    <input type="text" name="postal_code" id="postal_code" required><br>
+
+    <label for="state">State:</label>
+    <select name="stateDropdown">
+        <option value="">Select One</option>
+        <option value="AL">Alabama</option>
+        <option value="AK">Alaska</option>
+        <option value="AZ">Arizona</option>
+        <option value="AR">Arkansas</option>
+        <option value="CA">California</option>
+        <option value="CO">Colorado</option>
+        <option value="CT">Connecticut</option>
+        <option value="DE">Delaware</option>
+        <option value="DC">District Of Columbia</option>
+        <option value="FL">Florida</option>
+        <option value="GA">Georgia</option>
+        <option value="HI">Hawaii</option>
+        <option value="ID">Idaho</option>
+        <option value="IL">Illinois</option>
+        <option value="IN">Indiana</option>
+        <option value="IA">Iowa</option>
+        <option value="KS">Kansas</option>
+        <option value="KY">Kentucky</option>
+        <option value="LA">Louisiana</option>
+        <option value="ME">Maine</option>
+        <option value="MD">Maryland</option>
+        <option value="MA">Massachusetts</option>
+        <option value="MI">Michigan</option>
+        <option value="MN">Minnesota</option>
+        <option value="MS">Mississippi</option>
+        <option value="MO">Missouri</option>
+        <option value="MT">Montana</option>
+        <option value="NE">Nebraska</option>
+        <option value="NV">Nevada</option>
+        <option value="NH">New Hampshire</option>
+        <option value="NJ">New Jersey</option>
+        <option value="NM">New Mexico</option>
+        <option value="NY">New York</option>
+        <option value="NC">North Carolina</option>
+        <option value="ND">North Dakota</option>
+        <option value="OH">Ohio</option>
+        <option value="OK">Oklahoma</option>
+        <option value="OR">Oregon</option>
+        <option value="PA">Pennsylvania</option>
+        <option value="RI">Rhode Island</option>
+        <option value="SC">South Carolina</option>
+        <option value="SD">South Dakota</option>
+        <option value="TN">Tennessee</option>
+        <option value="TX">Texas</option>
+        <option value="UT">Utah</option>
+        <option value="VT">Vermont</option>
+        <option value="VA">Virginia</option>
+        <option value="WA">Washington</option>
+        <option value="WV">West Virginia</option>
+        <option value="WI">Wisconsin</option>
+        <option value="WY">Wyoming</option>
+    </select><br>
+
+    <label for="city">City:</label>
+    <input type="text" name="city" id="city" required><br>
+
+    <label for="street">Street:</label>
+    <input type="text" name="street" id="street" required><br>
+
+    <label for="customer_type">Customer Type:</label>
+    <select name="customer_type" id="customer_type" required onchange="toggleFields()">
+        <option value="">Select One</option>
+        <option value="individual">Individual</option>
+        <option value="business">Business</option>
+    </select><br>
+
+    <div id="individual_fields" style="display: none;">
+        <label for="driver_license">Driver's License:</label>
+        <input type="text" name="driver_license" id="driver_license"><br>
+
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name"><br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name"><br>
+    </div>
+
+    <div id="business_fields" style="display: none;">
+        <label for="tax_id">Tax ID:</label>
+        <input type="text" name="tax_id" id="tax_id"><br>
+
+        <label for="business_name">Business Name:</label>
+        <input type="text" name="business_name" id="business_name"><br>
+
+        <label for="contact_name">Contact Name:</label>
+        <input type="text" name="contact_name" id="contact_name"><br>
+
+        <label for="contact_title">Contact Title:</label>
+        <input type="text" name="contact_title" id="contact_title"><br>
+    </div>
+    <input type="hidden" name="original_page" value="add_vehicle">
+    <button type="submit">Add Customer</button>
+</form>
+
+<script>
+    function toggleFields() {
+        var customerType = document.getElementById("customer_type").value;
+        var individualFields = document.getElementById("individual_fields");
+        var businessFields = document.getElementById("business_fields");
+
+        if (customerType === "individual") {
+            individualFields.style.display = "block";
+            businessFields.style.display = "none";
+        } else if (customerType === "business") {
+            individualFields.style.display = "none";
+            businessFields.style.display = "block";
+        } else {
+            individualFields.style.display = "none";
+            businessFields.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    // Add this script to handle redirection after form submission
+    document.addEventListener("DOMContentLoaded", function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var originalPage = urlParams.get('original_page');
+
+        if (originalPage) {
+            var form = document.getElementById("customer_form");
+            form.setAttribute("action", "/add_customer?original_page=" + encodeURIComponent(originalPage));
+        }
+    });
+</script>
+
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,38 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var curr_val = "{{current_status['status']}}"
+    jQuery(document).ready(function($) {
+
+        $('select').val(curr_val);
+
+        $('#part_status').change(function() {
+        selected_val = $(this).val();
+        if (curr_val == 'received' && selected_val == 'ordered') {
+            alert("invalid selection, cannot revert to previous status")
+            $("#update_part_status").attr("disabled", "disabled");
+        }
+        else if (curr_val == 'installed' && (selected_val == 'ordered' || selected_val == 'received')) {
+            alert("invalid selection, cannot revert to previous status")
+            $("#update_part_status").attr("disabled", "disabled");
+        }
+        else
+            $("#update_part_status").prop("disabled", false);
+    });
+    });
+</script>
+
+<body>
+    <form method="POST" action="/update-part-status">
+        <h1>Part Status Update</h1>
+        <label for="po_number">Purchase Order Number: </label><input type="text" name="po_number" id="po_number" value="{{ po_number }}" readonly>
+        <label for="part_number">Part Number: </label><input type="text" name="part_number" id="part_number" value="{{ part_number }}" readonly>
+        <label for="part_status">Part Status</label>
+        <select name="part_status" id="part_status">
+            <option value="ordered">Ordered</option>
+            <option value="received">Received</option>
+            <option value="installed">Installed</option>
+        </select><br><br>
+        <input type="submit" value="update_part_status" id="update_part_status">
+    </form>
+</body>
+

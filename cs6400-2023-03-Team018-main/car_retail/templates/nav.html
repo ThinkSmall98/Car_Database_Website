@@ -1,0 +1,27 @@
+{% block content %}
+    <style>
+        nav a {
+            color: #d64161;
+            font-size: 1em;
+            margin-left: 50px;
+            text-decoration: none;
+        }
+    </style>
+    <nav>
+        <a href="{{ url_for('main.vehicle_search') }}">Vehicle Search</a>
+   	{% if session.username %}
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+   	{% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a>
+   	{% endif %}
+   	{% if session.is_manager %}
+            <a href="{{ url_for('rep.reports') }}">Reports</a>
+   	{% endif %}
+    {% if session.is_inventory_clerk %}
+        <a href="{{ url_for('main.add_vehicle') }}">Add Vehicle</a>
+        <a href="{{ url_for('main.add_part_order') }}">Add Part Order</a>
+
+    {% endif %}
+
+    </nav>
+{% endblock %}
